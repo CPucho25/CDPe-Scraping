@@ -143,8 +143,24 @@ namespace CDPe_Scraping
 
                 Thread.Sleep(2500);
 
-                IWebElement iLinkCDP = driver.FindElement(By.XPath("/html/body/div[5]/div[2]/div[2]/div/div[1]/div/div/ul/li[2]/li[2]/li[2]/li[1]/span/span"));
-                iLinkCDP.Click();
+
+                elementExist = IsElementPresent(driver, By.XPath("/html/body/div[5]/div[2]/div[2]/div/div[1]/div/div/ul/li[2]/li[2]/li[2]/li[1]/span/span"));
+
+                if (elementExist == false)
+                {
+                    iBuscar.Clear();
+                    iBuscar.SendKeys("integrada");
+
+                    Thread.Sleep(1000);
+
+                    IWebElement iLinkCDP = driver.FindElement(By.XPath("/html/body/div[5]/div[2]/div[2]/div/div[1]/div/div/ul/li[4]/li[8]/li[18]/li[1]/span[1]/span"));
+                    iLinkCDP.Click();
+
+                }
+                else {
+                    IWebElement iLinkCDP = driver.FindElement(By.XPath("/html/body/div[5]/div[2]/div[2]/div/div[1]/div/div/ul/li[2]/li[2]/li[2]/li[1]/span/span"));
+                    iLinkCDP.Click();
+                }
 
                 Thread.Sleep(4000);
 
@@ -216,6 +232,8 @@ namespace CDPe_Scraping
                             btnDownload = IsElementPresent(driver, By.XPath("/html/body/div[2]/div[2]/div[2]/div[3]/div[5]/div/div/div/div[1]/a[1]"));
                         }
                     }
+
+                    Thread.Sleep(3000);
 
                     //Boton Descargar
                     IWebElement iBtnDescargar = driver.FindElement(By.XPath("/html/body/div[2]/div[2]/div[2]/div[3]/div[5]/div/div/div/div[1]/a[1]"));
@@ -394,7 +412,5 @@ namespace CDPe_Scraping
                 }
             }
         }
-
-
     }
 }
