@@ -95,6 +95,7 @@ namespace CDPe_Scraping
 
             lblInicio.Text = DateInicio;
             bool elementExist = true;
+            bool frameExist = true;
             bool btnDownload = true;
 
             string url = @"https://api-seguridad.sunat.gob.pe/v1/clientessol/4f3b88b3-d9d6-402a-b85d-6a0bc857746a/oauth2/loginMenuSol?originalUrl=https://e-menu.sunat.gob.pe/cl-ti-itmenu/AutenticaMenuInternet.htm&state=rO0ABXNyABFqYXZhLnV0aWwuSGFzaE1hcAUH2sHDFmDRAwACRgAKbG9hZEZhY3RvckkACXRocmVzaG9sZHhwP0AAAAAAAAx3CAAAABAAAAADdAAEZXhlY3B0AAZwYXJhbXN0AEsqJiomL2NsLXRpLWl0bWVudS9NZW51SW50ZXJuZXQuaHRtJmI2NGQyNmE4YjVhZjA5MTkyM2IyM2I2NDA3YTFjMWRiNDFlNzMzYTZ0AANleGVweA==";
@@ -192,7 +193,7 @@ namespace CDPe_Scraping
                 // Capturamos la ruta del archivo uno x uno para la consulta masiva
                 foreach (var fi in di.GetFiles())
                 {
-                    //Cargamos ruta del archivo
+                    //Capturamos(path + fi.Name) y luego Cargamos la ruta del archivo en el elemento de la web
                     string fullName = path + fi.Name;
                     
                     IWebElement iBtnFile = driver.FindElement(By.Id("txtarchivo"));
@@ -205,6 +206,7 @@ namespace CDPe_Scraping
                     iBtnEnviar.Click();
 
                     Thread.Sleep(10000);
+                    // Carga la pagina para mostrar el resultado de la consulta...(se puso 10 segundos de espera)
 
                     //   PAGE 2  -------------------------------------------------------------------------------------------------------------
                     //Seleccionamos el frame(ya que hay un html dentro de otro html)
@@ -215,7 +217,7 @@ namespace CDPe_Scraping
                     if (elementExist == false) {
                         while (elementExist == false)
                         {
-                            Thread.Sleep(3000);
+                            Thread.Sleep(2000);
                             elementExist = IsElementPresent(driver, By.XPath("/html/body/div[4]/div/div[2]/iframe"));
                         }
                     }
@@ -223,25 +225,28 @@ namespace CDPe_Scraping
                     IWebElement iFrameDetails3 = driver.FindElement(By.XPath("/html/body/div[4]/div/div[2]/iframe"));
                     driver.SwitchTo().Frame(iFrameDetails3);
 
+                    #region Boton Descargar
+                    // 1.- Evalua si existe
                     btnDownload = IsElementPresent(driver,By.XPath("/html/body/div[2]/div[2]/div[2]/div[3]/div[5]/div/div/div/div[1]/a[1]"));
 
                     if(btnDownload == false) {
-                        while (elementExist == false)
+                        while (btnDownload == false)
                         {
-                            Thread.Sleep(3000);
+                            Thread.Sleep(2000);
                             btnDownload = IsElementPresent(driver, By.XPath("/html/body/div[2]/div[2]/div[2]/div[3]/div[5]/div/div/div/div[1]/a[1]"));
                         }
                     }
 
-                    Thread.Sleep(3000);
+                    Thread.Sleep(2000);
 
-                    //Boton Descargar
+                    // 2.- Selecciona el Boton
                     IWebElement iBtnDescargar = driver.FindElement(By.XPath("/html/body/div[2]/div[2]/div[2]/div[3]/div[5]/div/div/div/div[1]/a[1]"));
                     iBtnDescargar.Click();
 
                     Thread.Sleep(2000);
+                    #endregion
 
-                    //Boton Volver (para salir del resultado)
+                    //Boton VOLVER (para salir del resultado)
                     IWebElement iBtnVolver = driver.FindElement(By.XPath("/html/body/div[2]/div[2]/div[2]/div[3]/div[5]/div/div/div/div[1]/a[2]"));
                     iBtnVolver.Click();
 
@@ -250,11 +255,22 @@ namespace CDPe_Scraping
                     //   PAGE 1  -------------------------------------------------------------------------------------------------------------
                     //Posicionamos de nuevo al Frame
                     driver.SwitchTo().DefaultContent();
+                    //1.- Evaluamos
+                    frameExist = IsElementPresent(driver, By.XPath("/html/body/div[4]/div/div[2]/iframe"));
 
+                    if (frameExist == false)
+                    {
+                        while (frameExist == false)
+                        {
+                            Thread.Sleep(2000);
+                            frameExist = IsElementPresent(driver, By.XPath("/html/body/div[4]/div/div[2]/iframe"));
+                        }
+                    }
+                    //2.- Seleccionamos
                     IWebElement iFrameDetails4 = driver.FindElement(By.XPath("/html/body/div[4]/div/div[2]/iframe"));
                     driver.SwitchTo().Frame(iFrameDetails4);
 
-                    //Boton Cancelar (para limpiar la ruta de archivo)
+                    //Boton CANCELAR (para limpiar la ruta de archivo)
                     IWebElement iBtnCancelar = driver.FindElement(By.Id("btnCancelar"));
                     iBtnCancelar.Click();
 
