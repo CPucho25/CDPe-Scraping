@@ -195,7 +195,7 @@ namespace CDPe_Scraping
                 {
                     //Capturamos(path + fi.Name) y luego Cargamos la ruta del archivo en el elemento de la web
                     string fullName = path + fi.Name;
-                    
+
                     IWebElement iBtnFile = driver.FindElement(By.Id("txtarchivo"));
                     iBtnFile.SendKeys(fullName);
 
@@ -227,9 +227,9 @@ namespace CDPe_Scraping
 
                     #region Boton Descargar
                     // 1.- Evalua si existe
-                    btnDownload = IsElementPresent(driver,By.XPath("/html/body/div[2]/div[2]/div[2]/div[3]/div[5]/div/div/div/div[1]/a[1]"));
+                    btnDownload = IsElementPresent(driver, By.XPath("/html/body/div[2]/div[2]/div[2]/div[3]/div[5]/div/div/div/div[1]/a[1]"));
 
-                    if(btnDownload == false) {
+                    if (btnDownload == false) {
                         while (btnDownload == false)
                         {
                             Thread.Sleep(2000);
@@ -275,7 +275,7 @@ namespace CDPe_Scraping
                     iBtnCancelar.Click();
 
                     Thread.Sleep(1500);
-                }   
+                }
             }
             catch (Exception ex)
             {
@@ -300,6 +300,12 @@ namespace CDPe_Scraping
 
                 JoinFile(path_DWL, nameFile, path_SalidaJoin);
             }
+
+            Thread.Sleep(1000);
+
+            // 4) V A C I A R  C A R P E T A S  (1,2 y 3)
+
+            vaciarCarpetas1_2_3();
 
         }
 
@@ -373,7 +379,7 @@ namespace CDPe_Scraping
 
                 if (cont < 99) { contenido += line + "\r\n"; }
 
-                else           { contenido += line; }
+                else { contenido += line; }
 
                 if (cont == 99)
                 {
@@ -427,6 +433,37 @@ namespace CDPe_Scraping
                     linea = sr1.ReadLine();
                 }
             }
+        }
+
+        public void vaciarCarpetas1_2_3(){
+
+            string filesDelete = "";
+
+            DirectoryInfo di1 = new DirectoryInfo(path_Entrada_Split);
+
+            foreach (var fi1 in di1.GetFiles())
+            {
+                filesDelete += fi1.Name + "\r\n";
+                File.Delete(path_Entrada_Split + fi1.Name);
+            }
+
+            DirectoryInfo di2 = new DirectoryInfo(path_Salida_Split);
+
+            foreach (var fi2 in di2.GetFiles())
+            {
+                filesDelete += fi2.Name + "\r\n";
+                File.Delete(path_Salida_Split + fi2.Name);
+            }
+
+            DirectoryInfo di3 = new DirectoryInfo(path_DWL);
+
+            foreach (var fi3 in di3.GetFiles())
+            {
+                filesDelete += fi3.Name + "\r\n";
+                File.Delete(path_DWL + fi3.Name);
+            }
+
+            MessageBox.Show(filesDelete);
         }
     }
 }
