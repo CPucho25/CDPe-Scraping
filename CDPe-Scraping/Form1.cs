@@ -435,15 +435,12 @@ namespace CDPe_Scraping
             }
         }
 
-        public void vaciarCarpetas1_2_3(){
-
-            string filesDelete = "";
-
+        public void vaciarCarpetas1_2_3()
+        {
             DirectoryInfo di1 = new DirectoryInfo(path_Entrada_Split);
 
             foreach (var fi1 in di1.GetFiles())
             {
-                filesDelete += fi1.Name + "\r\n";
                 File.Delete(path_Entrada_Split + fi1.Name);
             }
 
@@ -451,7 +448,6 @@ namespace CDPe_Scraping
 
             foreach (var fi2 in di2.GetFiles())
             {
-                filesDelete += fi2.Name + "\r\n";
                 File.Delete(path_Salida_Split + fi2.Name);
             }
 
@@ -459,11 +455,8 @@ namespace CDPe_Scraping
 
             foreach (var fi3 in di3.GetFiles())
             {
-                filesDelete += fi3.Name + "\r\n";
                 File.Delete(path_DWL + fi3.Name);
             }
-
-            MessageBox.Show(filesDelete);
         }
     }
 }
