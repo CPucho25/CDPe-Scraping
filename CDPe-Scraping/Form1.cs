@@ -283,29 +283,35 @@ namespace CDPe_Scraping
                 throw;
             }
 
-            String DateFin = DateTime.Now.ToString();
-            lblFin.Text = DateFin;
+            Thread.Sleep(2000);
 
             string pathDL2 = Environment.CurrentDirectory + @"\3-CDPs-Downloads\";
 
-            txtPath.Text = pathDL2;
-
             // 3) U N I R    F I L E S   (JOIN) --------------------------------------------------------------------------
 
-            DirectoryInfo di3 = new DirectoryInfo(path_Entrada_Split);
+            DirectoryInfo di33 = new DirectoryInfo(path_Entrada_Split);
+            int count = 0;
 
-            foreach (var fi3 in di3.GetFiles())
+            foreach (var fi3 in di33.GetFiles())
             {
                 string nameFile = Path.GetFileNameWithoutExtension(fi3.Name);
 
                 JoinFile(path_DWL, nameFile, path_SalidaJoin);
+
+                count++;
             }
+
+            txtPath.Text = pathDL2;
 
             Thread.Sleep(1000);
 
             // 4) V A C I A R  C A R P E T A S  (1,2 y 3)
 
-            vaciarCarpetas1_2_3();
+            vaciarCarpetas1_2_3(count);
+
+
+            String DateFin = DateTime.Now.ToString();
+            lblFin.Text = DateFin;
 
         }
 
@@ -432,11 +438,16 @@ namespace CDPe_Scraping
 
                     linea = sr1.ReadLine();
                 }
+                sr1.Close();
             }
         }
 
-        public void vaciarCarpetas1_2_3()
+        public void vaciarCarpetas1_2_3(int cantidadFiles)
         {
+            int tiempoEspera = cantidadFiles * 1500;
+
+            Thread.Sleep(tiempoEspera);
+
             DirectoryInfo di1 = new DirectoryInfo(path_Entrada_Split);
 
             foreach (var fi1 in di1.GetFiles())
@@ -450,6 +461,8 @@ namespace CDPe_Scraping
             {
                 File.Delete(path_Salida_Split + fi2.Name);
             }
+
+            Thread.Sleep(tiempoEspera);
 
             DirectoryInfo di3 = new DirectoryInfo(path_DWL);
 
