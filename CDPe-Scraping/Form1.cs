@@ -86,7 +86,7 @@ namespace CDPe_Scraping
                 SplitFile(path_Entrada_Split + fi01.Name, path_Salida_Split);
             }
 
-            Thread.Sleep(5000);
+            Thread.Sleep(4000);
 
 
             // 2) SCRAPING  S U N A T 
@@ -107,6 +107,7 @@ namespace CDPe_Scraping
             string ruc = txtRuc.Text;
             string user = txtUser.Text;
             string pass = txtPass.Text;
+            string errorFiles = "";
 
             // INICIAR SESION - SUNAT
             try
@@ -126,7 +127,6 @@ namespace CDPe_Scraping
 
                 IWebElement iBtnLogin = driver.FindElement(By.Id("btnAceptar"));
                 iBtnLogin.Click();
-
             }
             catch (Exception ex)
             {
@@ -137,13 +137,12 @@ namespace CDPe_Scraping
             Thread.Sleep(2000);
 
             // DOWNLOAD FILES - CDP - SUNAT
-            try
-            {
+            /*try
+            {*/
                 IWebElement iBuscar = driver.FindElement(By.Id("txtBusca"));
                 iBuscar.SendKeys("Consulta Integrada de Validez de los Comprobantes de Pago");
 
                 Thread.Sleep(2500);
-
 
                 elementExist = IsElementPresent(driver, By.XPath("/html/body/div[5]/div[2]/div[2]/div/div[1]/div/div/ul/li[2]/li[2]/li[2]/li[1]/span/span"));
 
@@ -156,7 +155,6 @@ namespace CDPe_Scraping
 
                     IWebElement iLinkCDP = driver.FindElement(By.XPath("/html/body/div[5]/div[2]/div[2]/div/div[1]/div/div/ul/li[4]/li[8]/li[18]/li[1]/span[1]/span"));
                     iLinkCDP.Click();
-
                 }
                 else {
                     IWebElement iLinkCDP = driver.FindElement(By.XPath("/html/body/div[5]/div[2]/div[2]/div/div[1]/div/div/ul/li[2]/li[2]/li[2]/li[1]/span/span"));
@@ -201,7 +199,7 @@ namespace CDPe_Scraping
 
                     Thread.Sleep(2000);
 
-                    //Boton Generar Reporte (la ruta del archivo)
+                    //Boton GENERAR REPORTE (la ruta del archivo)
                     IWebElement iBtnEnviar = driver.FindElement(By.Id("btnEnviar"));
                     iBtnEnviar.Click();
 
@@ -225,63 +223,105 @@ namespace CDPe_Scraping
                     IWebElement iFrameDetails3 = driver.FindElement(By.XPath("/html/body/div[4]/div/div[2]/iframe"));
                     driver.SwitchTo().Frame(iFrameDetails3);
 
+
+                    #region Evalua si hay archivos con errores (en la pagina 1)
+
+                    // Anuncio de error 
+                    bool elementExistError = IsElementPresent(driver, By.XPath("/html/body/div[2]/div[2]/div[2]/div[2]/form/div[3]/div[1]/div/div/span"));
+
+                    if (elementExistError == true)
+                    {
+                        //Capturamos el mensaje del error
+                        string errorMsg = driver.FindElement(By.XPath("/html/body/div[2]/div[2]/div[2]/div[2]/form/div[3]/div[1]/div/div/span")).Text;
+                        errorFiles += fi.Name +"|" + errorMsg + "\r\n";
+
+                        if (errorMsg != "El archivo contiene lineas repetidas" && errorMsg != "El archivo contiene lineas repetidas") 
+                        {
+                            //descargar archivo error si el anuncion es: "Se encontraron inconsistencias, para ver el detalle dar clic "
+                            driver.FindElement(By.XPath("/html/body/div[2]/div[2]/div[2]/div[2]/form/div[3]/div[1]/div/div/span/a")).Click();
+                        }
+
+                        Thread.Sleep(1000);
+
+                        //Cerrar anuncio de error "x"
+                        driver.FindElement(By.XPath("/html/body/div[2]/div[2]/div[2]/div[2]/form/div[3]/div[1]/div/div/a")).Click();
+
+                        Thread.Sleep(1000);
+
+                        //Boton CANCELAR (para limpiar la ruta de archivo)
+                        IWebElement iBtnCancelar1 = driver.FindElement(By.Id("btnCancelar"));
+                        iBtnCancelar1.Click();
+                    }
+                    else {
+
+                    driver.SwitchTo().DefaultContent();
+
+                    Thread.Sleep(2000);
+
+                    IWebElement iFrameDetails33 = driver.FindElement(By.XPath("/html/body/div[4]/div/div[2]/iframe"));
+                    driver.SwitchTo().Frame(iFrameDetails33);
+
                     #region Boton Descargar
                     // 1.- Evalua si existe
                     btnDownload = IsElementPresent(driver, By.XPath("/html/body/div[2]/div[2]/div[2]/div[3]/div[5]/div/div/div/div[1]/a[1]"));
 
-                    if (btnDownload == false) {
-                        while (btnDownload == false)
+                        if (btnDownload == false)
                         {
-                            Thread.Sleep(2000);
-                            btnDownload = IsElementPresent(driver, By.XPath("/html/body/div[2]/div[2]/div[2]/div[3]/div[5]/div/div/div/div[1]/a[1]"));
+                            while (btnDownload == false)
+                            {
+                                Thread.Sleep(2000);
+                                btnDownload = IsElementPresent(driver, By.XPath("/html/body/div[2]/div[2]/div[2]/div[3]/div[5]/div/div/div/div[1]/a[1]"));
+                            }
                         }
+
+                        Thread.Sleep(2000);
+
+                        // 2.- Selecciona el Boton
+                        IWebElement iBtnDescargar = driver.FindElement(By.XPath("/html/body/div[2]/div[2]/div[2]/div[3]/div[5]/div/div/div/div[1]/a[1]"));
+                        iBtnDescargar.Click();
+
+                        Thread.Sleep(2000);
+                        #endregion
+
+                        //Boton VOLVER (para salir del resultado)
+                        IWebElement iBtnVolver = driver.FindElement(By.XPath("/html/body/div[2]/div[2]/div[2]/div[3]/div[5]/div/div/div/div[1]/a[2]"));
+                        iBtnVolver.Click();
+
+                        Thread.Sleep(1000);
+
+                        //   PAGE 1  -------------------------------------------------------------------------------------------------------------
+                        //Posicionamos de nuevo al Frame
+                        driver.SwitchTo().DefaultContent();
+                        //1.- Evaluamos
+                        frameExist = IsElementPresent(driver, By.XPath("/html/body/div[4]/div/div[2]/iframe"));
+
+                        if (frameExist == false)
+                        {
+                            while (frameExist == false)
+                            {
+                                Thread.Sleep(2000);
+                                frameExist = IsElementPresent(driver, By.XPath("/html/body/div[4]/div/div[2]/iframe"));
+                            }
+                        }
+                        //2.- Seleccionamos
+                        IWebElement iFrameDetails4 = driver.FindElement(By.XPath("/html/body/div[4]/div/div[2]/iframe"));
+                        driver.SwitchTo().Frame(iFrameDetails4);
+
+                        //Boton CANCELAR (para limpiar la ruta de archivo)
+                        IWebElement iBtnCancelar2 = driver.FindElement(By.Id("btnCancelar"));
+                        iBtnCancelar2.Click();
                     }
 
-                    Thread.Sleep(2000);
-
-                    // 2.- Selecciona el Boton
-                    IWebElement iBtnDescargar = driver.FindElement(By.XPath("/html/body/div[2]/div[2]/div[2]/div[3]/div[5]/div/div/div/div[1]/a[1]"));
-                    iBtnDescargar.Click();
-
-                    Thread.Sleep(2000);
                     #endregion
-
-                    //Boton VOLVER (para salir del resultado)
-                    IWebElement iBtnVolver = driver.FindElement(By.XPath("/html/body/div[2]/div[2]/div[2]/div[3]/div[5]/div/div/div/div[1]/a[2]"));
-                    iBtnVolver.Click();
-
-                    Thread.Sleep(1000);
-
-                    //   PAGE 1  -------------------------------------------------------------------------------------------------------------
-                    //Posicionamos de nuevo al Frame
-                    driver.SwitchTo().DefaultContent();
-                    //1.- Evaluamos
-                    frameExist = IsElementPresent(driver, By.XPath("/html/body/div[4]/div/div[2]/iframe"));
-
-                    if (frameExist == false)
-                    {
-                        while (frameExist == false)
-                        {
-                            Thread.Sleep(2000);
-                            frameExist = IsElementPresent(driver, By.XPath("/html/body/div[4]/div/div[2]/iframe"));
-                        }
-                    }
-                    //2.- Seleccionamos
-                    IWebElement iFrameDetails4 = driver.FindElement(By.XPath("/html/body/div[4]/div/div[2]/iframe"));
-                    driver.SwitchTo().Frame(iFrameDetails4);
-
-                    //Boton CANCELAR (para limpiar la ruta de archivo)
-                    IWebElement iBtnCancelar = driver.FindElement(By.Id("btnCancelar"));
-                    iBtnCancelar.Click();
 
                     Thread.Sleep(1500);
                 }
-            }
+            /*}
             catch (Exception ex)
             {
                 MessageBox.Show("Error al Guardar \n" + ex.Message, "Mensaje", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 throw;
-            }
+            }*/
 
             Thread.Sleep(2000);
 
@@ -305,32 +345,19 @@ namespace CDPe_Scraping
 
             Thread.Sleep(1000);
 
-            // 4) V A C I A R  C A R P E T A S  (1,2 y 3)
+            // 4) V A C I A R  C A R P E T A S  (1, 2 y 3)
 
-            vaciarCarpetas1_2_3(count);
+            /*vaciarCarpetas1_2_3(count);*/
 
+            // Grabar Errores en txt(solo si existe) sino Vaciar Carpertas(significa que el proceso fue correcto)
+            if (errorFiles != "") {
+                File.WriteAllText(path_SalidaJoin+"error_Files.txt", errorFiles);
+            } else {
+                vaciarCarpetas1_2_3(count);
+            }
 
             String DateFin = DateTime.Now.ToString();
             lblFin.Text = DateFin;
-
-        }
-
-
-        private void activarBtn() {
-            string tRuc = txtRuc.Text;
-            string tUser = txtUser.Text;
-            string tPass = txtPass.Text;
-
-            if (tRuc != "" && tUser != "" && tPass != "")
-            {
-                button1.Enabled = true;
-                button1.BackColor = Color.LightBlue;
-            }
-            else {
-                button1.Enabled = false;
-                button1.BackColor = System.Drawing.SystemColors.Control;
-                button1.UseVisualStyleBackColor = true;
-            }
         }
 
         //  B O T O N E S    Y    E V E N T O S ---------------------------------------------------------
@@ -344,12 +371,10 @@ namespace CDPe_Scraping
         {
             activarBtn();
         }
-
         private void txtRuc_KeyPress(object sender, KeyPressEventArgs e)
         {
             activarBtn();
         }
-
         private void txtPass_KeyUp(object sender, KeyEventArgs e)
         {
             activarBtn();
@@ -375,6 +400,9 @@ namespace CDPe_Scraping
             string[] lines = System.IO.File.ReadAllLines(ruta_txt);//16 mil
 
             int numFile = 0;
+            string strNumFile = "";
+
+
             int cont = 0;
             string contenido = "";
             int paqueCien = lines.Length / 100;
@@ -382,6 +410,16 @@ namespace CDPe_Scraping
 
             foreach (string line in lines)
             {
+                strNumFile = (numFile + 1).ToString();
+
+                if (strNumFile.Length == 1)
+                {
+                    strNumFile = "00" + strNumFile;
+                }
+                else if (strNumFile.Length == 2)
+                {
+                    strNumFile = "0" + strNumFile;
+                }
 
                 if (cont < 99) { contenido += line + "\r\n"; }
 
@@ -389,7 +427,7 @@ namespace CDPe_Scraping
 
                 if (cont == 99)
                 {
-                    File.WriteAllText(nueva_ruta_txt + numFile + ".txt", contenido);
+                    File.WriteAllText(nueva_ruta_txt + strNumFile + ".txt", contenido);
                     contenido = "";
                     cont = -1;
                     numFile += 1;
@@ -403,9 +441,20 @@ namespace CDPe_Scraping
             {
                 if (i == sueltos - 1)
                 {
+                    strNumFile = (numFile + 1).ToString();
+
+                    if (strNumFile.Length == 1)
+                    {
+                        strNumFile = "00" + strNumFile;
+                    }
+                    else if (strNumFile.Length == 2)
+                    {
+                        strNumFile = "0" + strNumFile;
+                    }
+
                     contenido += lines[i + paqueCien * 100];
 
-                    File.WriteAllText(nueva_ruta_txt + numFile + ".txt", contenido);
+                    File.WriteAllText(nueva_ruta_txt + strNumFile + ".txt", contenido);
                 }
                 else {
                     contenido += lines[i + paqueCien * 100] + "\r\n";
@@ -469,6 +518,25 @@ namespace CDPe_Scraping
             foreach (var fi3 in di3.GetFiles())
             {
                 File.Delete(path_DWL + fi3.Name);
+            }
+        }
+
+        private void activarBtn()
+        {
+            string tRuc = txtRuc.Text;
+            string tUser = txtUser.Text;
+            string tPass = txtPass.Text;
+
+            if (tRuc != "" && tUser != "" && tPass != "")
+            {
+                button1.Enabled = true;
+                button1.BackColor = Color.LightBlue;
+            }
+            else
+            {
+                button1.Enabled = false;
+                button1.BackColor = System.Drawing.SystemColors.Control;
+                button1.UseVisualStyleBackColor = true;
             }
         }
     }
