@@ -19,4 +19,4 @@ Descripcion de Carpetas:
 3-CDPs-Downloads (Automaticamente los archivos descargados de la web se almacenaran en esta carpeta)
 4-CDPs-Ouput_Join (Todos los archivos descargados en la capeta 3) se uniran en uno y se guardará en esta carpeta)
 
-Nota: Si la web detecta que los documentos consultados presentan algun tipo de error, en la carpeta 4) se generara un documento txt con la descripcion del error.
+Nota: Si la web detecta que los documentos consultados presentan algun tipo de error, en la carpeta 4) se generara un documento txt con la descripción.
