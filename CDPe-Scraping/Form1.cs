@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Threading;
+using System.Diagnostics;
 
 namespace CDPe_Scraping
 {
@@ -73,6 +74,7 @@ namespace CDPe_Scraping
         private void Form1_Load(object sender, EventArgs e)
         {
             button1.Enabled = false;
+            btnOpenDirectory.Visible = false;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -326,6 +328,7 @@ namespace CDPe_Scraping
             Thread.Sleep(2000);
 
             string pathDL2 = Environment.CurrentDirectory + @"\3-CDPs-Downloads\";
+            txtPath.Text = pathDL2;
 
             // 3) U N I R    F I L E S   (JOIN) --------------------------------------------------------------------------
 
@@ -341,7 +344,8 @@ namespace CDPe_Scraping
                 count++;
             }
 
-            txtPath.Text = pathDL2;
+            txtPath.Text = path_SalidaJoin;//Path Salida Final
+            btnOpenDirectory.Visible = true;
 
             Thread.Sleep(1000);
 
@@ -378,6 +382,15 @@ namespace CDPe_Scraping
         private void txtPass_KeyUp(object sender, KeyEventArgs e)
         {
             activarBtn();
+        }
+        private void btnOpenDirectory_Click(object sender, EventArgs e)
+        {
+            String pathDir = txtPath.Text;
+
+            if (pathDir != "")
+            {
+                Process.Start(pathDir);
+            }
         }
 
         // P R O C E D I M I E N T O S ------------------------------------------------------------------

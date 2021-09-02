@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.txtRuc = new System.Windows.Forms.TextBox();
             this.txtUser = new System.Windows.Forms.TextBox();
             this.txtPass = new System.Windows.Forms.TextBox();
@@ -42,6 +43,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.lblInicio = new System.Windows.Forms.Label();
             this.lblFin = new System.Windows.Forms.Label();
+            this.btnOpenDirectory = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // txtRuc
@@ -103,20 +105,23 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(186, 179);
+            this.button1.BackColor = System.Drawing.SystemColors.Control;
+            this.button1.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.button1.Location = new System.Drawing.Point(156, 179);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(87, 40);
+            this.button1.Size = new System.Drawing.Size(146, 34);
             this.button1.TabIndex = 9;
             this.button1.Text = "Ingresar";
-            this.button1.UseVisualStyleBackColor = true;
+            this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // btnSalir
             // 
             this.btnSalir.Font = new System.Drawing.Font("Calibri", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSalir.Location = new System.Drawing.Point(167, 431);
+            this.btnSalir.Location = new System.Drawing.Point(156, 390);
             this.btnSalir.Name = "btnSalir";
-            this.btnSalir.Size = new System.Drawing.Size(146, 37);
+            this.btnSalir.Size = new System.Drawing.Size(146, 30);
             this.btnSalir.TabIndex = 10;
             this.btnSalir.Text = "Salir";
             this.btnSalir.UseVisualStyleBackColor = true;
@@ -125,15 +130,15 @@
             // txtPath
             // 
             this.txtPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPath.Location = new System.Drawing.Point(14, 320);
+            this.txtPath.Location = new System.Drawing.Point(14, 280);
             this.txtPath.Name = "txtPath";
-            this.txtPath.Size = new System.Drawing.Size(425, 20);
+            this.txtPath.Size = new System.Drawing.Size(399, 20);
             this.txtPath.TabIndex = 11;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(15, 302);
+            this.label4.Location = new System.Drawing.Point(15, 261);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(83, 13);
             this.label4.TabIndex = 12;
@@ -142,7 +147,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(286, 356);
+            this.label5.Location = new System.Drawing.Point(286, 315);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(35, 13);
             this.label5.TabIndex = 13;
@@ -151,7 +156,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(297, 389);
+            this.label6.Location = new System.Drawing.Point(297, 348);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(24, 13);
             this.label6.TabIndex = 14;
@@ -160,7 +165,7 @@
             // lblInicio
             // 
             this.lblInicio.AutoSize = true;
-            this.lblInicio.Location = new System.Drawing.Point(336, 356);
+            this.lblInicio.Location = new System.Drawing.Point(336, 315);
             this.lblInicio.Name = "lblInicio";
             this.lblInicio.Size = new System.Drawing.Size(10, 13);
             this.lblInicio.TabIndex = 15;
@@ -169,17 +174,32 @@
             // lblFin
             // 
             this.lblFin.AutoSize = true;
-            this.lblFin.Location = new System.Drawing.Point(336, 388);
+            this.lblFin.Location = new System.Drawing.Point(336, 347);
             this.lblFin.Name = "lblFin";
             this.lblFin.Size = new System.Drawing.Size(10, 13);
             this.lblFin.TabIndex = 16;
             this.lblFin.Text = "-";
             // 
+            // btnOpenDirectory
+            // 
+            this.btnOpenDirectory.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnOpenDirectory.BackgroundImage")));
+            this.btnOpenDirectory.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnOpenDirectory.FlatAppearance.BorderSize = 0;
+            this.btnOpenDirectory.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnOpenDirectory.Location = new System.Drawing.Point(417, 276);
+            this.btnOpenDirectory.Margin = new System.Windows.Forms.Padding(2);
+            this.btnOpenDirectory.Name = "btnOpenDirectory";
+            this.btnOpenDirectory.Size = new System.Drawing.Size(31, 27);
+            this.btnOpenDirectory.TabIndex = 17;
+            this.btnOpenDirectory.UseVisualStyleBackColor = true;
+            this.btnOpenDirectory.Click += new System.EventHandler(this.btnOpenDirectory_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(461, 501);
+            this.ClientSize = new System.Drawing.Size(458, 451);
+            this.Controls.Add(this.btnOpenDirectory);
             this.Controls.Add(this.lblFin);
             this.Controls.Add(this.lblInicio);
             this.Controls.Add(this.label6);
@@ -194,8 +214,10 @@
             this.Controls.Add(this.txtPass);
             this.Controls.Add(this.txtUser);
             this.Controls.Add(this.txtRuc);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Consulta CDP";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -218,6 +240,7 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label lblInicio;
         private System.Windows.Forms.Label lblFin;
+        private System.Windows.Forms.Button btnOpenDirectory;
     }
 }
 
